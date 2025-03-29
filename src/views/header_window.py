@@ -7,7 +7,7 @@ class HeaderWindow(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        layout = QHBoxLayout()
+        layout = QHBoxLayout()        
         self.ports_label = QLabel("Serial Port")
         self.ports = QComboBox()
         self.ports.addItems(Helpers.get_serial_ports())
@@ -20,9 +20,9 @@ class HeaderWindow(QWidget):
         layout.addWidget(self.ports)
         layout.addWidget(self.baud_rates_label)
         layout.addWidget(self.baud_rates)
-        self.setLayout(layout)
-        # Connect signals and slots
-        #self.load_button.clicked.connect(self.on_load_button_click)
+        self.setLayout(layout)        
 
-    def on_load_button_click(self):
-        self.label.setText("Button Clicked!")
+    def set_controller(self, controller):
+        self.controller = controller
+        self.ports.currentIndexChanged.connect(self.controller.handle_com_port_changed)
+        self.baud_rates.currentIndexChanged.connect(self.controller.handle_baudrate_changed)        
