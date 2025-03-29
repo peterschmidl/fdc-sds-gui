@@ -1,25 +1,33 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit
 
 class DiskWindow(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, disk_number, parent=None):
         super().__init__(parent)
-        self.init_ui()
+        self.controller = None
+        self.init_ui(disk_number)
 
-    def init_ui(self):
-        self.layout = QVBoxLayout()
-        self.label = QLabel(f"Disk")
+    def init_ui(self, disk_number):
+        self.v_layout = QVBoxLayout()
+        self.disk_label = QLabel(f"Disk {disk_number}")
+        self.path_text = QTextEdit()
+        self.path_text.setReadOnly(True)
+
+        self.v_layout.addWidget(self.disk_label)
+        self.v_layout.addWidget(self.path_text)
+
         self.load_button = QPushButton("Load")
         self.unload_button = QPushButton("Unload")
         self.h_layout = QHBoxLayout()
         self.h_layout.addWidget(self.load_button)
         self.h_layout.addWidget(self.unload_button)
-        
-        self.layout.addWidget(self.label)
-        self.layout.addLayout(self.h_layout)
-        
-        self.setLayout(self.layout)
-        # Connect signals and slots
-        self.load_button.clicked.connect(self.on_load_button_click)
+                
+        self.v_layout.addLayout(self.h_layout)        
+        self.setLayout(self.v_layout)        
 
-    def on_load_button_click(self):
-        self.label.setText("Button Clicked!")
+    def set_controller(self, controller):
+        self.controller = controller
+        self.load_button.clicked.connect(self.controller.handle_load_click)
+        self.unload_button.clicked.connect(self.controller.handle_unload_click)
+
+    def set_path_text(self, text):
+        self.path_text.setPlainText(text)
