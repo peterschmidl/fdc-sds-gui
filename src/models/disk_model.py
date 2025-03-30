@@ -4,12 +4,9 @@ class DiskModel:
         self.path = ""
         self.status = "Idle"
 
-    def load_disk(self):        
-        self.path = f"/dev/sda => {self.disk_number}"
+    def set_path(self, path):        
+        self.path = path
         self.status = "Loaded"
-        return self.path
 
-    def unload_disk(self):        
-        self.path = ""
-        self.status = "Unloaded"
+    def get_path(self):
         return self.path

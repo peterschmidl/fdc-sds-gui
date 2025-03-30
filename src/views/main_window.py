@@ -3,6 +3,7 @@ from views.disk_window import *
 from controllers.disk_controller import DiskController
 from controllers.header_controller import HeaderController
 from models.disk_model import DiskModel
+from models.header_model import HeaderModel
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout
 from PyQt5.QtGui import QPalette, QColor
@@ -26,16 +27,16 @@ class MainWindow(QMainWindow):
         self.setFixedSize(QSize(500,600))
         widget = QWidget()
         widget.setLayout(v_layout)
-
         self.setCentralWidget(widget)
 
     def create_header_window(self):
-        header_window = HeaderWindow(self)
-        header_window.set_controller(HeaderController(header_window))
+        header_window = HeaderWindow(None)
+        header_model = HeaderModel()
+        header_window.set_controller(HeaderController(header_window, header_model))
         return header_window
 
-    def create_disk_window(number, self):
-        disk_window = DiskWindow(self, number)
+    def create_disk_window(self, number):
+        disk_window = DiskWindow(number, None)
         disk_model = DiskModel(number)
         disk_window.set_controller(DiskController(disk_window, disk_model))
         return disk_window

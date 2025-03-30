@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, QFileDialog
 
 class DiskWindow(QWidget):
     def __init__(self, disk_number, parent=None):
@@ -29,5 +29,8 @@ class DiskWindow(QWidget):
         self.load_button.clicked.connect(self.controller.handle_load_click)
         self.unload_button.clicked.connect(self.controller.handle_unload_click)
 
-    def set_path_text(self, text):
-        self.path_text.setPlainText(text)
+    def get_path(self):
+        return QFileDialog.getOpenFileName(self, "Select Altair Disk Image to load")[0]
+
+    def set_path(self, path):
+        self.path_text.setPlainText(path)
