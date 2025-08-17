@@ -3,7 +3,7 @@ from helpers import *
 class HeaderModel:
     def __init__(self):
         self.com_ports = Helpers.get_serial_ports()
-        self.current_com_port = self.com_ports[0]
+        self.current_com_port = 'None' if len(self.com_ports) is 0 else self.com_ports[0]
         
         self.baudrates = ["403.2K", "460.8K", "230.4K", "76.8K", "57.6K", "38.4K", "19.2K", "9.6K"]
         self.current_baudrate = self.baudrates[0]
