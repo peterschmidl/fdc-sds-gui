@@ -31,7 +31,7 @@ class DiskWindow(QWidget):
         self.unload_button.clicked.connect(self.controller.handle_unload_click)
 
     def get_path(self):
-        return QFileDialog.getOpenFileName(self, "Select Altair Disk Image to load")[0]
+        return QFileDialog.getOpenFileName(self, "Select Altair Disk Image to load", "", "Disk Images (*.dsk)")[0]
 
     def set_path(self, path):
         self.path_text.setPlainText(path)

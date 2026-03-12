@@ -9,8 +9,9 @@ from models.header_model import HeaderModel
 from command_runner import CommandRunner
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout
+from pathlib import Path
 
-__version__ = "0.0.1"
+__version__ = Path(__file__).resolve().parents[2].joinpath("VERSION").read_text().strip()
 
 
 class MainWindow(QMainWindow):
