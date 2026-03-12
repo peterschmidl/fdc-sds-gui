@@ -11,6 +11,7 @@ class DiskWindow(QWidget):
         self.disk_label = QLabel(f"Disk {disk_number}")
         self.path_text = QTextEdit()
         self.path_text.setReadOnly(True)
+        self.path_text.setFixedHeight(28)
 
         self.v_layout.addWidget(self.disk_label)
         self.v_layout.addWidget(self.path_text)

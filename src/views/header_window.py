@@ -16,6 +16,7 @@ class HeaderWindow(QWidget):
         self.baud_rates = QComboBox()
 
         self.connected = QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.connected.setFixedSize(24, 24)
 
         layout.addWidget(self.ports_label)
         layout.addWidget(self.ports)
@@ -37,6 +38,9 @@ class HeaderWindow(QWidget):
 
     def set_current_com_port(self, index):
         self.ports.setCurrentIndex(index)
+
+    def set_connected(self, state):
+        self.connected.setValue(state)
 
     def set_controller(self, controller):
         self.controller = controller
