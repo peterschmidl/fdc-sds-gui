@@ -8,7 +8,7 @@ from models.disk_model import DiskModel
 from models.header_model import HeaderModel
 from command_runner import CommandRunner
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QAction, QMessageBox
 from pathlib import Path
 
 __version__ = Path(__file__).resolve().parents[2].joinpath("VERSION").read_text().strip()
@@ -31,6 +31,8 @@ class MainWindow(QMainWindow):
         for i in range(4):
             v_layout.addWidget(self.create_disk_window(i))
         v_layout.addWidget(log_window)
+
+        self._create_menu_bar()
 
         self.setMinimumSize(QSize(500, 800))
         widget = QWidget()
@@ -58,6 +60,26 @@ class MainWindow(QMainWindow):
             DiskController(disk_window, disk_model, self.log_controller, self._on_config_change)
         )
         return disk_window
+
+    def _create_menu_bar(self):
+        menu_bar = self.menuBar()
+        help_menu = menu_bar.addMenu("Help")
+        about_action = QAction("About", self)
+        about_action.triggered.connect(self._show_about)
+        help_menu.addAction(about_action)
+
+    def _show_about(self):
+        QMessageBox.about(
+            self,
+            "About FDC-SDS-GUI",
+            f"<h3>FDC-SDS-GUI v{__version__}</h3>"
+            f"<p>GUI for <a href='https://github.com/deltecent/fdc-sds'>FDC-SDS Serial Disk Server</a> for the Altair FDC+</p>"
+            f"<p><b>Author:</b> Peter Schmidl<br>"
+            f"<a href='mailto:peter.schmidl@proton.me'>peter.schmidl@proton.me</a></p>"
+            f"<p><b>License:</b> MIT</p>"
+            f"<p><a href='https://github.com/peterschmidl/fdc-sds-gui'>"
+            f"https://github.com/peterschmidl/fdc-sds-gui</a></p>"
+        )
 
     def _on_config_change(self):
         port = self._header_model.get_current_com_port()
