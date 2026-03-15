@@ -10,8 +10,16 @@ from command_runner import CommandRunner
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QAction, QMessageBox
 from pathlib import Path
+import sys
 
-__version__ = Path(__file__).resolve().parents[2].joinpath("VERSION").read_text().strip()
+def _get_version():
+    if getattr(sys, 'frozen', False):
+        base = Path(sys._MEIPASS)
+    else:
+        base = Path(__file__).resolve().parents[2]
+    return (base / "VERSION").read_text().strip()
+
+__version__ = _get_version()
 
 
 class MainWindow(QMainWindow):
