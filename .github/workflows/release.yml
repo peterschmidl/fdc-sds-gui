@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             artifact: fdc-sds-gui-linux
             binary: dist/fdc-sds-gui
           - os: macos-latest
@@ -38,7 +38,7 @@ jobs:
           pyinstaller --onefile --windowed --name fdc-sds-gui --paths=src --hidden-import=views --hidden-import=controllers --hidden-import=models --add-data "VERSION:." src/app.py
 
       - name: Rename binary
-        run: mv ${{ matrix.binary }} ${{ matrix.binary }}-${{ matrix.os == 'ubuntu-latest' && 'linux' || 'macos' }}
+        run: mv ${{ matrix.binary }} ${{ matrix.binary }}-${{ matrix.os == 'ubuntu-22.04' && 'linux' || 'macos' }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
