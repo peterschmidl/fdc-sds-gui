@@ -1,10 +1,7 @@
 import sys
 import shutil
 from views.main_window import *
-from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QApplication, QMessageBox
-from PyQt5.QtGui import QPalette, QColor
-
 
 app = QApplication(sys.argv)
 
