@@ -2,7 +2,7 @@
 GUI for [FDC-SDS Serial Disk Server](https://github.com/deltecent/fdc-sds) for the Altair FDC+
 on Linux and MacOS
 
-The [FDC-SDS Serial Disk Server](https://github.com/deltecent/fdc-sds) binary is bundled — no separate installation required.
+The Serial Disk Server binary is now bundled — no separate installation required.
 
 ## Installation
 
