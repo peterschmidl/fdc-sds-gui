@@ -27,7 +27,7 @@ jobs:
 
       - name: Install build dependencies (Linux)
         if: matrix.os == 'ubuntu-22.04'
-        run: sudo apt-get install -y autoconf automake libtool
+        run: sudo apt-get install -y autoconf automake libtool libgtk-3-dev libglib2.0-dev
 
       - name: Install build dependencies (macOS)
         if: matrix.os == 'macos-latest'
@@ -46,9 +46,16 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install dependencies
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-22.04'
         run: |
-          pip install -r requirements.txt
+          pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04 wxPython
+          pip install pyserial pyinstaller
+
+      - name: Install dependencies (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          pip install --only-binary=wxPython wxPython pyserial
           pip install pyinstaller
 
       - name: Build binary (Linux)
