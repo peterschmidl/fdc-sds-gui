@@ -7,9 +7,9 @@ from views.main_window import MainWindow
 
 app = wx.App()
 
-#if not sys.platform.startswith('darwin') and not sys.platform.startswith('linux'):
-#    wx.MessageBox('Unsupported platform (Linux and MacOS are supported)', 'FDC-SDS-GUI Error', wx.ICON_ERROR)
-#    sys.exit(1)
+if not sys.platform.startswith('darwin') and not sys.platform.startswith('linux'):
+    wx.MessageBox('Unsupported platform (Linux and MacOS are supported)', 'FDC-SDS-GUI Error', wx.ICON_ERROR)
+    sys.exit(1)
 
 _submodule_binary = Path(__file__).resolve().parents[1] / "external/fdc-sds/fdcsds"
 
