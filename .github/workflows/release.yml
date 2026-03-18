@@ -8,6 +8,9 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     strategy:
@@ -18,7 +21,7 @@ jobs:
             binary: dist/fdc-sds-gui
           - os: macos-latest
             artifact: fdc-sds-gui-macos
-            binary: dist/fdc-sds-gui.app
+            binary: dist/fdc-sds-gui
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
@@ -66,15 +69,10 @@ jobs:
       - name: Build binary (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          pyinstaller --windowed --name fdc-sds-gui --paths=src --hidden-import=views --hidden-import=controllers --hidden-import=models --add-data "VERSION:." --add-binary "fdcsds:." src/app.py
+          pyinstaller --onefile --windowed --name fdc-sds-gui --paths=src --hidden-import=views --hidden-import=controllers --hidden-import=models --add-data "VERSION:." --add-binary "fdcsds:." src/app.py
 
-      - name: Package artifact (Linux)
-        if: matrix.os == 'ubuntu-22.04'
+      - name: Package artifact
         run: mv ${{ matrix.binary }} dist/${{ matrix.artifact }}-${{ github.ref_name }}
-
-      - name: Package artifact (macOS)
-        if: matrix.os == 'macos-latest'
-        run: cd dist && zip -r ${{ matrix.artifact }}-${{ github.ref_name }}.zip fdc-sds-gui.app
 
       - name: Upload artifact
         uses: actions/upload-artifact@v5
