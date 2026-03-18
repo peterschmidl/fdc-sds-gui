@@ -56,13 +56,13 @@ jobs:
           pyinstaller --onefile --windowed --name fdc-sds-gui --paths=src --hidden-import=views --hidden-import=controllers --hidden-import=models --add-data "VERSION:." --add-binary "fdcsds:." src/app.py
 
       - name: Rename binary
-        run: mv ${{ matrix.binary }} dist/${{ matrix.artifact }}
+        run: mv ${{ matrix.binary }} dist/${{ matrix.artifact }}-${{ github.ref_name }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.artifact }}
-          path: dist/${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}-${{ github.ref_name }}
 
   release:
     needs: build
