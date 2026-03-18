@@ -1,6 +1,7 @@
 import sys
 import serial.tools.list_ports
-from PyQt5.QtWidgets import QMessageBox
+import wx
+
 
 class Helpers:
     def get_serial_ports():
@@ -12,8 +13,4 @@ class Helpers:
         ]
 
     def show_message(message, icon, window_title):
-        msg = QMessageBox()
-        msg.setIcon(icon)
-        msg.setWindowTitle(window_title)
-        msg.setText(message)
-        msg.exec()    
+        wx.MessageBox(message, window_title, icon)

@@ -2,16 +2,15 @@ import sys
 import shutil
 import os
 from pathlib import Path
-from views.main_window import *
-from PyQt5.QtWidgets import QApplication
+import wx
+from views.main_window import MainWindow
 
-app = QApplication(sys.argv)
+app = wx.App()
 
-if not sys.platform.startswith('darwin') and not sys.platform.startswith('linux'):
-    Helpers.show_message('Unsupported platform (Linux and MacOS are supported)', QMessageBox.Critical, 'FDC-SDS-GUI Error')
-    sys.exit(1)
+#if not sys.platform.startswith('darwin') and not sys.platform.startswith('linux'):
+#    wx.MessageBox('Unsupported platform (Linux and MacOS are supported)', 'FDC-SDS-GUI Error', wx.ICON_ERROR)
+#    sys.exit(1)
 
-# Use bundled fdcsds if running as PyInstaller binary, otherwise fall back to submodule or PATH
 _submodule_binary = Path(__file__).resolve().parents[1] / "external/fdc-sds/fdcsds"
 
 if getattr(sys, 'frozen', False):
@@ -23,12 +22,13 @@ elif _submodule_binary.is_file():
 elif shutil.which("fdcsds"):
     os.environ['FDCSDS_PATH'] = shutil.which("fdcsds")
 else:
-    Helpers.show_message('<b>fdcsds</b> command not found in PATH.<br>Please install <a href="https://github.com/deltecent/fdc-sds">FDC-SDS Serial Disk Server</a> before running this application.',
-                         QMessageBox.Critical, 'FDC-SDS-GUI Error')
-    sys.exit(1)
+    wx.MessageBox(
+        'fdcsds command not found in PATH.\nPlease install FDC-SDS Serial Disk Server\n(https://github.com/deltecent/fdc-sds)',
+        'FDC-SDS-GUI Error', wx.ICON_ERROR
+    )
+    #sys.exit(1)
 
 window = MainWindow()
-window.show()
+window.Show()
 
-# Start the event loop.
-app.exec()
+app.MainLoop()

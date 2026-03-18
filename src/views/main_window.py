@@ -1,5 +1,7 @@
-from views.header_window import *
-from views.disk_window import *
+import wx
+import wx.adv
+from views.header_window import HeaderWindow
+from views.disk_window import DiskWindow
 from views.log_window import LogWindow
 from controllers.disk_controller import DiskController
 from controllers.header_controller import HeaderController
@@ -7,10 +9,9 @@ from controllers.log_controller import LogController
 from models.disk_model import DiskModel
 from models.header_model import HeaderModel
 from command_runner import CommandRunner
-from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QAction, QMessageBox
 from pathlib import Path
 import sys
+
 
 def _get_version():
     if getattr(sys, 'frozen', False):
@@ -22,46 +23,42 @@ def _get_version():
 __version__ = _get_version()
 
 
-class MainWindow(QMainWindow):
+class MainWindow(wx.Frame):
     def __init__(self):
-        super().__init__()
-        self.setWindowTitle(f"FDC-SDS-GUI v{__version__}")
-
+        super().__init__(None, title=f"FDC-SDS-GUI v{__version__}", size=(500, 800))
         self._disk_models = []
         self._header_model = None
         self._header_view = None
         self._runner = CommandRunner()
 
-        log_window, self.log_controller = self.create_log_window()
+        panel = wx.Panel(self)
+        v_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        v_layout = QVBoxLayout()
-        v_layout.addWidget(self.create_header_window())
+        log_window, self.log_controller = self._create_log_window(panel)
+
+        v_sizer.Add(self._create_header_window(panel), 0, wx.EXPAND | wx.ALL, 5)
         for i in range(4):
-            v_layout.addWidget(self.create_disk_window(i))
-        v_layout.addWidget(log_window)
+            v_sizer.Add(self._create_disk_window(panel, i), 0, wx.EXPAND | wx.ALL, 5)
+        v_sizer.Add(log_window, 1, wx.EXPAND | wx.ALL, 5)
 
+        panel.SetSizer(v_sizer)
         self._create_menu_bar()
 
-        self.setMinimumSize(QSize(500, 800))
-        widget = QWidget()
-        widget.setLayout(v_layout)
-        self.setCentralWidget(widget)
-
-    def create_log_window(self):
-        log_window = LogWindow()
+    def _create_log_window(self, parent):
+        log_window = LogWindow(parent)
         log_controller = LogController(log_window)
         return log_window, log_controller
 
-    def create_header_window(self):
-        self._header_view = HeaderWindow(None)
+    def _create_header_window(self, parent):
+        self._header_view = HeaderWindow(parent)
         self._header_model = HeaderModel()
         self._header_view.set_controller(
             HeaderController(self._header_view, self._header_model, self.log_controller, self._on_config_change)
         )
         return self._header_view
 
-    def create_disk_window(self, number):
-        disk_window = DiskWindow(number, None)
+    def _create_disk_window(self, parent, number):
+        disk_window = DiskWindow(parent, number)
         disk_model = DiskModel(number)
         self._disk_models.append(disk_model)
         disk_window.set_controller(
@@ -70,24 +67,23 @@ class MainWindow(QMainWindow):
         return disk_window
 
     def _create_menu_bar(self):
-        menu_bar = self.menuBar()
-        help_menu = menu_bar.addMenu("Help")
-        about_action = QAction("About", self)
-        about_action.triggered.connect(self._show_about)
-        help_menu.addAction(about_action)
+        menu_bar = wx.MenuBar()
+        help_menu = wx.Menu()
+        about_item = help_menu.Append(wx.ID_ABOUT, "About")
+        self.Bind(wx.EVT_MENU, self._show_about, about_item)
+        menu_bar.Append(help_menu, "Help")
+        self.SetMenuBar(menu_bar)
 
-    def _show_about(self):
-        QMessageBox.about(
-            self,
-            "About FDC-SDS-GUI",
-            f"<h3>FDC-SDS-GUI v{__version__}</h3>"
-            f"<p>GUI for <a href='https://github.com/deltecent/fdc-sds'>FDC-SDS Serial Disk Server</a> for the Altair FDC+</p>"
-            f"<p><b>Author:</b> Peter Schmidl<br>"
-            f"<a href='mailto:peter.schmidl@proton.me'>peter.schmidl@proton.me</a></p>"
-            f"<p><b>License:</b> GPL-3.0<br>"
-            f"<a href='https://github.com/peterschmidl/fdc-sds-gui'>"
-            f"https://github.com/peterschmidl/fdc-sds-gui</a></p>"
-        )
+    def _show_about(self, event):
+        info = wx.adv.AboutDialogInfo()
+        info.SetName("FDC-SDS-GUI")
+        info.SetVersion(__version__)
+        info.SetDescription("GUI for FDC-SDS Serial Disk Server for the Altair FDC+")
+        info.SetCopyright("(C) 2026 Peter Schmidl")
+        info.AddDeveloper("Peter Schmidl <peter.schmidl@proton.me>")
+        info.SetWebSite("https://github.com/peterschmidl/fdc-sds-gui")
+        info.SetLicence("GPL-3.0")
+        wx.adv.AboutBox(info)
 
     def _on_config_change(self):
         port = self._header_model.get_current_com_port()

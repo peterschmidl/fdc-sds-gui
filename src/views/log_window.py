@@ -1,28 +1,21 @@
+import wx
 from datetime import datetime
-from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QLabel
 
 
-class LogWindow(QWidget):
-    def __init__(self, parent=None):
+class LogWindow(wx.Panel):
+    def __init__(self, parent):
         super().__init__(parent)
-        self.init_ui()
+        self._init_ui()
 
-    def init_ui(self):
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-
-        self.log_label = QLabel("Log")
-        self.log_output = QTextEdit()
-        self.log_output.setReadOnly(True)
-        self.log_output.setMinimumHeight(200)
-
-        layout.addWidget(self.log_label)
-        layout.addWidget(self.log_output)
-        self.setLayout(layout)
+    def _init_ui(self):
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        log_label = wx.StaticText(self, label="Log")
+        self.log_output = wx.TextCtrl(self, style=wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_RICH2, size=(-1, 200))
+        sizer.Add(log_label, 0, wx.ALL, 5)
+        sizer.Add(self.log_output, 1, wx.EXPAND | wx.ALL, 5)
+        self.SetSizer(sizer)
 
     def append(self, message):
         timestamp = datetime.now().strftime("%H:%M:%S")
-        cursor = self.log_output.textCursor()
-        cursor.movePosition(QTextCursor.Start)
-        cursor.insertText(f"[{timestamp}] {message}\n")
+        self.log_output.SetInsertionPoint(0)
+        self.log_output.WriteText(f"[{timestamp}] {message}\n")

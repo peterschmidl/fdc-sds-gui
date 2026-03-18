@@ -1,41 +1,40 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, QFileDialog, QGroupBox
+import wx
 
-class DiskWindow(QWidget):
-    def __init__(self, disk_number, parent=None):
+
+class DiskWindow(wx.Panel):
+    def __init__(self, parent, disk_number):
         super().__init__(parent)
         self.controller = None
-        self.init_ui(disk_number)
+        self._init_ui(disk_number)
 
-    def init_ui(self, disk_number):
-        self.group_box = QGroupBox(f"Disk {disk_number}")
-        self.inner_layout = QVBoxLayout()
+    def _init_ui(self, disk_number):
+        box = wx.StaticBox(self, label=f"Disk {disk_number}")
+        sizer = wx.StaticBoxSizer(box, wx.VERTICAL)
 
-        self.path_text = QTextEdit()
-        self.path_text.setReadOnly(True)
-        self.path_text.setFixedHeight(28)
+        self.path_text = wx.TextCtrl(self, style=wx.TE_READONLY)
 
-        self.inner_layout.addWidget(self.path_text)
+        btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.load_button = wx.Button(self, label="Load")
+        self.unload_button = wx.Button(self, label="Unload")
+        btn_sizer.Add(self.load_button, 1, wx.ALL, 2)
+        btn_sizer.Add(self.unload_button, 1, wx.ALL, 2)
 
-        self.load_button = QPushButton("Load")
-        self.unload_button = QPushButton("Unload")
-        self.h_layout = QHBoxLayout()
-        self.h_layout.addWidget(self.load_button)
-        self.h_layout.addWidget(self.unload_button)
-
-        self.inner_layout.addLayout(self.h_layout)
-        self.group_box.setLayout(self.inner_layout)
-
-        self.v_layout = QVBoxLayout()
-        self.v_layout.addWidget(self.group_box)
-        self.setLayout(self.v_layout)        
+        sizer.Add(self.path_text, 0, wx.EXPAND | wx.ALL, 5)
+        sizer.Add(btn_sizer, 0, wx.EXPAND | wx.ALL, 2)
+        self.SetSizer(sizer)
 
     def set_controller(self, controller):
         self.controller = controller
-        self.load_button.clicked.connect(self.controller.handle_load_click)
-        self.unload_button.clicked.connect(self.controller.handle_unload_click)
+        self.load_button.Bind(wx.EVT_BUTTON, lambda e: controller.handle_load_click())
+        self.unload_button.Bind(wx.EVT_BUTTON, lambda e: controller.handle_unload_click())
 
     def get_path(self):
-        return QFileDialog.getOpenFileName(self, "Select Altair Disk Image to load", "", "Disk Images (*.dsk)")[0]
+        with wx.FileDialog(self, "Select Altair Disk Image to load",
+                           wildcard="Disk Images (*.dsk)|*.dsk",
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as dlg:
+            if dlg.ShowModal() == wx.ID_OK:
+                return dlg.GetPath()
+        return ""
 
     def set_path(self, path):
-        self.path_text.setPlainText(path)
+        self.path_text.SetValue(path)

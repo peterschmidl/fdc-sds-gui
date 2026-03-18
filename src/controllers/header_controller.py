@@ -22,14 +22,14 @@ class HeaderController:
                 break
 
     def handle_com_port_change(self):
-        com_port = self.view.ports.currentText()
+        com_port = self.view.get_selected_port()
         self.model.set_current_com_port(com_port)
         self.log.log(f"Port selected: {com_port}")
         if self.on_change:
             self.on_change()
 
     def handle_baudrate_change(self):
-        baud_rate = self.view.baud_rates.currentText()
+        baud_rate = self.view.get_selected_baud_rate()
         self.model.set_current_baud_rate(baud_rate)
         self.log.log(f"Baud rate selected: {baud_rate}")
         if self.on_change:
