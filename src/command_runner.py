@@ -1,10 +1,11 @@
 import subprocess
+import os
 from shutil import which
 
 
 class CommandRunner:
     def __init__(self):
-        self.sds_command = "fdcsds"
+        self.sds_command = os.environ.get('FDCSDS_PATH', 'fdcsds')
         self._process = None
 
     def run(self, port, baud, disk_paths, log):
@@ -12,7 +13,7 @@ class CommandRunner:
         if not disk_paths:
             return False
         if not self.check_fdcsds_present():
-            log.log(f"Error: '{self.sds_command}' not found in PATH")
+            log.log(f"Error: '{self.sds_command}' not found")
             return False
         args = [self.sds_command, "-p", f"/dev/{port}", "-b", str(baud)]
         for i in sorted(disk_paths):
@@ -35,4 +36,4 @@ class CommandRunner:
         return False
 
     def check_fdcsds_present(self):
-        return which(self.sds_command) is not None
+        return os.path.isfile(self.sds_command) or which(self.sds_command) is not None

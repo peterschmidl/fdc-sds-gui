@@ -84,7 +84,7 @@ class MainWindow(QMainWindow):
             f"<p>GUI for <a href='https://github.com/deltecent/fdc-sds'>FDC-SDS Serial Disk Server</a> for the Altair FDC+</p>"
             f"<p><b>Author:</b> Peter Schmidl<br>"
             f"<a href='mailto:peter.schmidl@proton.me'>peter.schmidl@proton.me</a></p>"
-            f"<p><b>License:</b> MIT<br>"
+            f"<p><b>License:</b> GPL-3.0<br>"
             f"<a href='https://github.com/peterschmidl/fdc-sds-gui'>"
             f"https://github.com/peterschmidl/fdc-sds-gui</a></p>"
         )

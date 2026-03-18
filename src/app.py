@@ -1,5 +1,7 @@
 import sys
 import shutil
+import os
+from pathlib import Path
 from views.main_window import *
 from PyQt5.QtWidgets import QApplication
 
@@ -9,9 +11,16 @@ if not sys.platform.startswith('darwin') and not sys.platform.startswith('linux'
     Helpers.show_message('Unsupported platform (Linux and MacOS are supported)', QMessageBox.Critical, 'FDC-SDS-GUI Error')
     sys.exit(1)
 
-if shutil.which("fdcsds") is None:
+# Use bundled fdcsds if running as PyInstaller binary, otherwise fall back to PATH
+if getattr(sys, 'frozen', False):
+    fdcsds_path = str(Path(sys._MEIPASS) / 'fdcsds')
+    os.chmod(fdcsds_path, 0o755)
+    os.environ['FDCSDS_PATH'] = fdcsds_path
+elif shutil.which("fdcsds"):
+    os.environ['FDCSDS_PATH'] = shutil.which("fdcsds")
+else:
     Helpers.show_message('<b>fdcsds</b> command not found in PATH.<br>Please install <a href="https://github.com/deltecent/fdc-sds">FDC-SDS Serial Disk Server</a> before running this application.',
-                         QMessageBox.Critical, 'FDC-SDS-GUI Error')        
+                         QMessageBox.Critical, 'FDC-SDS-GUI Error')
     sys.exit(1)
 
 window = MainWindow()

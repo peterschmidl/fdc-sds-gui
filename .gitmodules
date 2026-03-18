@@ -1,0 +1,3 @@
+[submodule "external/fdc-sds"]
+	path = external/fdc-sds
+	url = https://github.com/deltecent/fdc-sds
