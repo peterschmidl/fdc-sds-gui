@@ -30,7 +30,7 @@ jobs:
 
       - name: Install build dependencies (Linux)
         if: matrix.os == 'ubuntu-22.04'
-        run: sudo apt-get install -y autoconf automake libtool libgtk-3-dev libglib2.0-dev
+        run: sudo apt-get install -y autoconf automake libtool libgtk-3-dev libglib2.0-dev upx
 
       - name: Install build dependencies (macOS)
         if: matrix.os == 'macos-latest'
@@ -64,7 +64,7 @@ jobs:
       - name: Build binary (Linux)
         if: matrix.os == 'ubuntu-22.04'
         run: |
-          pyinstaller --onefile --windowed --name fdc-sds-gui --paths=src --hidden-import=views --hidden-import=controllers --hidden-import=models --add-data "VERSION:." --add-binary "fdcsds:." src/app.py
+          pyinstaller --onefile --windowed --strip --upx-dir /usr/bin --name fdc-sds-gui --paths=src --hidden-import=views --hidden-import=controllers --hidden-import=models --add-data "VERSION:." --add-binary "fdcsds:." --exclude-module _tkinter --exclude-module wx.html2 --exclude-module wx.lib.agw src/app.py
 
       - name: Build binary (macOS)
         if: matrix.os == 'macos-latest'
